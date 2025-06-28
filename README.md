@@ -1,4 +1,4 @@
-## Creating a stop motion animation with Matplotlib
+## Creating an animation with Matplotlib
 
 Essentially, this project creates many pie charts in a folder using the `makedynamicpiecharts()` function.
 Then it opens them simultaneously with a delay with `animate()`.
