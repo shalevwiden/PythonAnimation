@@ -251,7 +251,7 @@ def makedynamicpiecharts(chartdata, chartcolors,chartcount,pie_initialdegrees,pi
         "/Users/shalevwiden/Downloads/Coding_Files/Python/BeautifulSoup_Library/python_animation/images"
     ])
 
-def makesamecolorcharts(chartdata, chartcolors,chartcount,pie_initialdegrees,pie_rotateval=10, scaleval=1.1,legend=True):
+def makesamecolorcharts(chartdata, chartcolors,chartcount,pie_initialdegrees,sectors,pie_rotateval=10, scaleval=1,legend=True):
     """
     This makes and saves the images to a folder specified in the function, images folder.
     The function could be changed to take the folder as argument. 
@@ -264,33 +264,33 @@ def makesamecolorcharts(chartdata, chartcolors,chartcount,pie_initialdegrees,pie
     # this is the data in EACH pie chart. 
     degreeslist=mapdegrees(initialdegrees=pie_initialdegrees,rotateval=pie_rotateval,count=chartcount)
 
-    sorteddegrees=False
+    sorteddegrees=True
     if sorteddegrees:
         degreeslist=sorted(degreeslist)
     print(f'len:{len(degreeslist)}')
     figx, figy=9,6
     # chart is the chartindex
-    fullstring='Hundreds of Slices'
-    # fullstring += ''.join([' 100 ' if i % 2 == 0 else '100' for i in range(chartcount-len(fullstring))])
+    fullstring='Thanks for watching                      '
+    fullstring += ''.join([' text ' if i % 2 == 0 else 'animationssss' for i in range(chartcount-len(fullstring))])
     title=""
     for chart in range(chartcount):
         
         plt.close()
         plt.figure(figsize=(figx,figy))
         
+        if chart>50:
+            chartcolors=get_similar_colors("#045656",steps=sectors)
         newangle= -(int(degreeslist[chart]))
         plt.pie(chartdata,colors=chartcolors,startangle=newangle)
         plt.title(title)
         
-        title=fullstring
-        plt.title('Alternating Colors')
 
 
-        # breaknum=len(fullstring)
-        # if breaknum>chart+1:
-        #     title+=fullstring[chart]
-        # else:
-        #     title=fullstring[1:]
+        breaknum=len(fullstring)
+        if breaknum>chart+1:
+            title+=fullstring[chart]
+        else:
+            title=fullstring[1:]
 
 
         
@@ -337,15 +337,15 @@ def makecharts():
     print('Making Dynamic Pie Charts now:')
 
     # the data is whats important for determining the colors
-    sectors=200
+    sectors=4
     datalist=get_data(sectors)
-    # colors=get_similar_colors("#5954EE",steps=sectors)
-    colors=get_alternating_colors("#3D3B9A",steps=sectors)
+    colors=get_similar_colors("#0A0A17",steps=sectors)
+    # colors=get_alternating_colors("#3D3B9A",steps=sectors)
 
     # colors=sorted(colors,reverse=True)
     deleteallimagesinimagefolder(imagefolderpath=imagesfolder)
 
-    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=7)
+    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=100,sectors=sectors)
     # makedynamicpiecharts(chartdata=datalist,chartcolors=getcolors(),chartcount=40,pie_initialdegrees=0,pie_rotateval=30)
     #
 
