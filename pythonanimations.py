@@ -270,16 +270,18 @@ def makesamecolorcharts(chartdata, chartcolors,chartcount,pie_initialdegrees,sec
     print(f'len:{len(degreeslist)}')
     figx, figy=9,6
     # chart is the chartindex
-    fullstring='Thanks for watching                      '
-    fullstring += ''.join([' text ' if i % 2 == 0 else 'animationssss' for i in range(chartcount-len(fullstring))])
+    fullstring='Hey Amos I made you this chart animation '
+    fullstring += ''.join([':)' if i % 2 == 0 else ' ' for i in range(chartcount-len(fullstring))])
     title=""
     for chart in range(chartcount):
         
         plt.close()
         plt.figure(figsize=(figx,figy))
         
-        if chart>50:
-            chartcolors=get_similar_colors("#045656",steps=sectors)
+        changecolornum=25
+        # once it gets bigger change the color
+        if chart>changecolornum:
+            chartcolors=get_similar_colors("#ED391D",steps=sectors)
         newangle= -(int(degreeslist[chart]))
         plt.pie(chartdata,colors=chartcolors,startangle=newangle)
         plt.title(title)
@@ -337,15 +339,15 @@ def makecharts():
     print('Making Dynamic Pie Charts now:')
 
     # the data is whats important for determining the colors
-    sectors=4
+    sectors=20
     datalist=get_data(sectors)
-    colors=get_similar_colors("#0A0A17",steps=sectors)
+    colors=get_similar_colors("#25651A",steps=sectors)
     # colors=get_alternating_colors("#3D3B9A",steps=sectors)
 
     # colors=sorted(colors,reverse=True)
     deleteallimagesinimagefolder(imagefolderpath=imagesfolder)
 
-    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=100,sectors=sectors)
+    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=50,sectors=sectors)
     # makedynamicpiecharts(chartdata=datalist,chartcolors=getcolors(),chartcount=40,pie_initialdegrees=0,pie_rotateval=30)
     #
 
@@ -361,4 +363,4 @@ def run():
     animateinsafari(imagesfolder,delaysecs=.1)
     # print(f'Animate in chrome\n {animateinchrome(folderpath='/Users/shalevwiden/Downloads/Coding_Files/Python/BeautifulSoup_Library/python_animation/images',delaysecs=.1)}')
 
-# run()
+run()
