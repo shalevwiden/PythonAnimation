@@ -270,29 +270,50 @@ def makesamecolorcharts(chartdata, chartcolors,chartcount,pie_initialdegrees,sec
     print(f'len:{len(degreeslist)}')
     figx, figy=9,6
     # chart is the chartindex
-    fullstring='Hey Amos I made you this chart animation '
-    fullstring += ''.join([':)' if i % 2 == 0 else ' ' for i in range(chartcount-len(fullstring))])
+    fullstring='Hey Katrina check out this chart animation I made '
+    fullstring2='Yeah I just do stuff like this sometimes aha ha'
+    fullstring2 += ''.join([': 0' if i % 2 == 0 else ' ' for i in range(chartcount-len(fullstring2))])
+
     title=""
+    title2=''
+
+
     for chart in range(chartcount):
         
         plt.close()
         plt.figure(figsize=(figx,figy))
         
-        changecolornum=25
+        changecolornum=30
         # once it gets bigger change the color
         if chart>changecolornum:
             chartcolors=get_similar_colors("#ED391D",steps=sectors)
         newangle= -(int(degreeslist[chart]))
         plt.pie(chartdata,colors=chartcolors,startangle=newangle)
-        plt.title(title)
-        
+
+        def titlelogic(title,title2):
 
 
-        breaknum=len(fullstring)
-        if breaknum>chart+1:
-            title+=fullstring[chart]
-        else:
-            title=fullstring[1:]
+            title1active=True
+            title2active=False
+            if title1active:
+                plt.title(title)
+            if title2active:
+                plt.title(title2)
+            if chart<len(fullstring):
+                title+=fullstring[chart]
+            elif chart<len(fullstring)+len(fullstring2):
+                title1active=False
+                title2active=True
+                title2+=fullstring2[chart] 
+
+            breaknum=len(fullstring)
+            if breaknum>chart+1:
+                title+=fullstring[chart]
+            else:
+                title=fullstring[1:]
+            
+            return title,title2
+        title,title2=titlelogic(title,title2)
 
 
         
@@ -339,7 +360,7 @@ def makecharts():
     print('Making Dynamic Pie Charts now:')
 
     # the data is whats important for determining the colors
-    sectors=20
+    sectors=26
     datalist=get_data(sectors)
     colors=get_similar_colors("#25651A",steps=sectors)
     # colors=get_alternating_colors("#3D3B9A",steps=sectors)
@@ -347,7 +368,7 @@ def makecharts():
     # colors=sorted(colors,reverse=True)
     deleteallimagesinimagefolder(imagefolderpath=imagesfolder)
 
-    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=50,sectors=sectors)
+    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=60,sectors=sectors)
     # makedynamicpiecharts(chartdata=datalist,chartcolors=getcolors(),chartcount=40,pie_initialdegrees=0,pie_rotateval=30)
     #
 
@@ -360,7 +381,7 @@ makecharts()
 def run():
     
 
-    animateinsafari(imagesfolder,delaysecs=.1)
+    animateinsafari(imagesfolder,delaysecs=.02)
     # print(f'Animate in chrome\n {animateinchrome(folderpath='/Users/shalevwiden/Downloads/Coding_Files/Python/BeautifulSoup_Library/python_animation/images',delaysecs=.1)}')
 
 run()
