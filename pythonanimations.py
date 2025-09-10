@@ -7,6 +7,17 @@ from matplotlib import pyplot as plt
 
 from deleteimages_inimagesfolder import deleteallimagesinimagefolder
 
+from matplotlib import font_manager as fm
+
+# Use your actual path here
+cambria_path = "/Applications/Microsoft Excel.app/Contents/Resources/DFonts/Cambria.ttc"
+cambria_font = fm.FontProperties(fname=cambria_path)
+
+verdanapath='/Applications/Microsoft Excel.app/Contents/Resources/DFonts/Verdana Bold.ttf'
+verdana_font = fm.FontProperties(fname=verdanapath)
+
+
+
 
 # do this tmr
 
@@ -171,32 +182,16 @@ def mapdegrees(initialdegrees, rotateval,count):
     '''
     returns degreeslist
     '''
-    currentdegrees=initialdegrees
-    totalrotations=0
-    degreeslist=[]
+    degreeslist = []
+    currentdegrees = initialdegrees
+
     for i in range(count):
-        if i>=1:
-            # this works to do it by loop
-            currentdegrees+=rotateval
-            # print(f'currentdegrees"{currentdegrees}rotateval={rotateval}')
+        degreeslist.append(currentdegrees % 360)  # always wrap at 360
+        currentdegrees += rotateval               # increment by rotateval
 
-            
-            rotationiteration=currentdegrees//360
-            currentdegrees-=(360*rotationiteration)
-
-            # track total rotations around the circle
-
-            if currentdegrees==initialdegrees:
-                totalrotations+=1
-            degreeslist.append(currentdegrees)
-            # add equation to control the changing of the rotateval
-        # elif initialdegrees!=0:
-        else:
-            rotationiteration=currentdegrees//360
-            degreeslist.append(currentdegrees)
     return degreeslist
             
-
+print(mapdegrees(0,10,90))
 
 def makedynamicpiecharts(chartdata, chartcolors,chartcount,pie_initialdegrees,pie_rotateval=20, scaleval=.01,legend=False):
     """
@@ -263,57 +258,69 @@ def makesamecolorcharts(chartdata, chartcolors,chartcount,pie_initialdegrees,sec
 
     # this is the data in EACH pie chart. 
     degreeslist=mapdegrees(initialdegrees=pie_initialdegrees,rotateval=pie_rotateval,count=chartcount)
+    print(f'length of list: {len(degreeslist)}')
+    print(f'degreelist: {degreeslist}')
 
-    sorteddegrees=True
-    if sorteddegrees:
-        degreeslist=sorted(degreeslist)
+
+    
+
     print(f'len:{len(degreeslist)}')
     figx, figy=9,6
     # chart is the chartindex
-    fullstring='Hey Katrina check out this chart animation I made '
-    fullstring2='Yeah I just do stuff like this sometimes aha ha'
-    fullstring2 += ''.join([': 0' if i % 2 == 0 else ' ' for i in range(chartcount-len(fullstring2))])
+    fullstring='Zachs Animation with light purple, medium purple, and heavy purple.'
+    fullstring2='With 128 sectors in each pie chart (purple =RGB(128, 0, 128)). '
+    remainder=chartcount-len(fullstring)-len(fullstring2)
+    fullstring2 += ''.join([' ' if i % 2 == 0 else ' ' for i in range(remainder)])
 
     title=""
     title2=''
 
+    def titlelogic(chart, title, title2):
+    # Phase 1: build up fullstring
+        if chart < len(fullstring):
+            title += fullstring[chart]
+        # Phase 2: build up fullstring2
+        elif chart < len(fullstring) + len(fullstring2):
+            index = chart - len(fullstring)
+            title2 += fullstring2[index]
 
+        # Decide which title to display
+        if chart < len(fullstring):
+                        
+            
+            # verdana is cool
+            plt.title(title, fontproperties=verdana_font, fontsize=19, color="#6F0577")
+        else:
+            plt.title(title2, fontdict={'family': 'Arial', 'color': "#6F0577", 'size': 19})
+
+        return title, title2
+    
     for chart in range(chartcount):
+
+
+
         
         plt.close()
         plt.figure(figsize=(figx,figy))
         
-        changecolornum=30
+        changecolornum1=(chartcount//3)*1
+        changecolornum2=(chartcount//3)*2
         # once it gets bigger change the color
-        if chart>changecolornum:
-            chartcolors=get_similar_colors("#ED391D",steps=sectors)
-        newangle= -(int(degreeslist[chart]))
+        if changecolornum2>chart>changecolornum1:
+            chartcolors=get_similar_colors("#B039CE",steps=sectors)
+        elif chart>changecolornum2:
+            chartcolors=get_similar_colors("#5B0558",steps=sectors)
+
+        # reverse the direction for one of them.
+
+        newangle= int(degreeslist[chart])
+       
         plt.pie(chartdata,colors=chartcolors,startangle=newangle)
+        # plt.title(fullstring,fontdict={'family': 'serif', 'color': 'darkblue', 'size': 16})
 
-        def titlelogic(title,title2):
+        # this handles the titling
+        title, title2 = titlelogic(chart, title, title2)
 
-
-            title1active=True
-            title2active=False
-            if title1active:
-                plt.title(title)
-            if title2active:
-                plt.title(title2)
-            if chart<len(fullstring):
-                title+=fullstring[chart]
-            elif chart<len(fullstring)+len(fullstring2):
-                title1active=False
-                title2active=True
-                title2+=fullstring2[chart] 
-
-            breaknum=len(fullstring)
-            if breaknum>chart+1:
-                title+=fullstring[chart]
-            else:
-                title=fullstring[1:]
-            
-            return title,title2
-        title,title2=titlelogic(title,title2)
 
 
         
@@ -334,7 +341,7 @@ def makesamecolorcharts(chartdata, chartcolors,chartcount,pie_initialdegrees,sec
         figy*=scaleval
         figy=round(figy,2)
         
-        testing=True
+        testing=False
         if testing:
             print(f'Saved {imagesfolder}/chart{chart}.png\nWith figx{figx} and figy{figy}\n\
                   and startangle of {degreeslist[chart]}\n')
@@ -359,16 +366,16 @@ def makecharts():
 
     print('Making Dynamic Pie Charts now:')
 
-    # the data is whats important for determining the colors
-    sectors=26
+    # the data is whats important for determining the chart sectors
+    sectors=128
     datalist=get_data(sectors)
-    colors=get_similar_colors("#25651A",steps=sectors)
+    colors=get_similar_colors("#C285BB",steps=sectors)
     # colors=get_alternating_colors("#3D3B9A",steps=sectors)
 
     # colors=sorted(colors,reverse=True)
     deleteallimagesinimagefolder(imagefolderpath=imagesfolder)
 
-    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=60,sectors=sectors)
+    makesamecolorcharts(chartdata=datalist,chartcolors=colors,pie_initialdegrees=180,chartcount=128,sectors=sectors)
     # makedynamicpiecharts(chartdata=datalist,chartcolors=getcolors(),chartcount=40,pie_initialdegrees=0,pie_rotateval=30)
     #
 
@@ -376,12 +383,12 @@ def makecharts():
     print(os.getcwd())
     time.sleep(2)
 
-makecharts()
+# makecharts()
 
 def run():
     
 
-    animateinsafari(imagesfolder,delaysecs=.02)
+    animateinsafari(imagesfolder,delaysecs=.3)
     # print(f'Animate in chrome\n {animateinchrome(folderpath='/Users/shalevwiden/Downloads/Coding_Files/Python/BeautifulSoup_Library/python_animation/images',delaysecs=.1)}')
 
 run()
